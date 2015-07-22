@@ -14,7 +14,7 @@ reqParse <- htmlParse(reqText, encoding = 'utf8') # 注意encoding
 # If encoding of html is big5, please use below code
 # reqText <- content(req, 'text', encoding = 'big5')
 # reqText <- toUTF8(reqText)
-# reqParse <- htmlParse(reqText)
+# reqParse <- htmlParse(reqText, encoding = 'utf8')
 
 reqParse2 <- htmlParse(req)
 
@@ -52,7 +52,9 @@ resultXpath <- xpathSApply(req, '//*[@id="mediablistmixedlpcatemp"]/div/ul/li/di
 
 resultXpath <- sapply(resultXpath, URLencode)
 # 觀察真實網址得知 以下作法
-resultXpath <- paste0('https://tw.news.yahoo.com/', resultXpath)
+resultXpath <- sprintf('https://tw.news.yahoo.com%s', resultXpath)
+resultXpath <- paste0('https://tw.news.yahoo.com', resultXpath)
+  paste(c('https://tw.news.yahoo.com', resultXpath[1]), collapse='')
 
 # check URL which you create is correct
 resultXpath[1]
@@ -80,7 +82,7 @@ resultCSS <- cssApply(req, cssPath, cssLink)
 
 
 resultCSS <- sapply(resultCSS, URLencode)
-resultCSS <- paste0('https://tw.news.yahoo.com/', resultCSS)
+resultCSS <- paste0('https://tw.news.yahoo.com', resultCSS)
 # check URL which you create is correct
 resultCSS[1]
 
@@ -89,12 +91,12 @@ resultCSS[1]
 i=1
 req <- GET(resultCSS[i])
 req <- content(req)
-# xpathSApply(req, '//*[@id="mediaarticlebody"]/div/p[2]', xmlValue)
-# xpathSApply(req, '//*[@id="mediaarticlebody"]/div/p', xmlValue)
-newsText <- xpathSApply(req, '//*[@id="mediaarticlebody"]/div', xmlValue)
-# xpathSApply(req, '//*[@id="yui_3_9_1_1_1437210937641_834"]', xmlValue)
+
+newsText <- xpathSApply(req, '//*[@id="mediaarticlebody"]/div//p', xmlValue)
+newsText <- paste(newsText, collapse = '')
 newsTitle <- xpathSApply(req, '//h1', xmlValue)
-data.frame(newsText=newsText, newsTitle=newsTitle, stringsAsFactors = FALSE)
+resultTp <- data.frame(newsText=newsText, newsTitle=newsTitle, stringsAsFactors = FALSE)
+View(resultTp)
 
 # 寫成迴圈
 
@@ -102,14 +104,19 @@ resultNews <- list()
 for(i in 1:length(resultCSS)){
   req <- GET(resultCSS[i])
   req <- content(req)
-  # xpathSApply(req, '//*[@id="mediaarticlebody"]/div/p[2]', xmlValue)
-  # xpathSApply(req, '//*[@id="mediaarticlebody"]/div/p', xmlValue)
-  newsText <- xpathSApply(req, '//*[@id="mediaarticlebody"]/div', xmlValue)
-  # xpathSApply(req, '//*[@id="yui_3_9_1_1_1437210937641_834"]', xmlValue)
+  newsText <- xpathSApply(req, '//*[@id="mediaarticlebody"]/div//p', xmlValue)
+  newsText <- paste(newsText, collapse = '')
   newsTitle <- xpathSApply(req, '//h1', xmlValue)
   resultNews[[i]] <- data.frame(newsText=newsText, newsTitle=newsTitle, stringsAsFactors = FALSE)
 }
 resultNews2 <- do.call(rbind, resultNews)
+View(resultNews2)
+
+
+# what is do.call(rbind, resultNews)
+View(rbind(resultNews[[1]], resultNews[[2]]))
+View(rbind(resultNews[[1]], resultNews[[2]], resultNews[[3]]))
+View(rbind(resultNews[[1]], resultNews[[2]], resultNews[[3]], resultNews[[4]]))
 
 
 
