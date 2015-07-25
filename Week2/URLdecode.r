@@ -123,9 +123,12 @@ View(rbind(resultNews[[1]], resultNews[[2]], resultNews[[3]], resultNews[[4]]))
 
 # os : windows
 library(tmcn)
-a='編碼問題'
+a <- '編碼問題'
 iconv(a, 'big5', 'utf8')
 URLencode(a)
 URLencode(iconv(a, 'big5', 'utf8'))
+
+res <- 'https://tw.news.yahoo.com/%E6%89%93%E5%87%BA%E8%B6%85%E5%89%8D%E5%88%86-%E8%91%A3%E5%AD%90%E6%81%A9%E7%AB%8B%E5%8A%9F-215007125.html'
+toUTF8(URLdecode(res))
 
 
