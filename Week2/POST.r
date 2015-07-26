@@ -32,6 +32,6 @@ dbWriteTable(db, "giantcyc", result)
 # dbSendQuery(db, ‘SQL_Query') 
 dbListTables(db) 
 giantcyc2 = dbGetQuery(db,  
-                       "select * from result") 
+                       "select * from giantcyc") 
 giantcyc2 = sapply(giantcyc2, toUTF8) 
 dbDisconnect(db) #  關閉 db 連結  
