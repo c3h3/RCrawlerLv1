@@ -21,5 +21,5 @@ res <- htmlParse(res, encoding = 'utf8')
 push <-xpathSApply(res, '//*[@id="main-content"]/div/span[1]', xmlValue)
 library(stringr)
 str_detect(push, '作者|看板|標題|時間')
-push[!str_detect(push, '作者|看板|標題|時間|')]
+push[!str_detect(push, '作者|看板|標題|時間')]
 
