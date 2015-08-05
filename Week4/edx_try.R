@@ -8,13 +8,31 @@ res2$cookies
 
 headers = add_headers("User-Agent"="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.76 Safari/537.36",
                       "Referer" = "https://courses.edx.org/login",
-                      "X-CSRFToken" = res2$cookies$csrftoken)
-headers$httpheader
+                      "X-CSRFToken" = res2$cookies[which(res2$cookies$name=="csrftoken"),]$value)
 
-class(headers)
+
+if (packageVersion("httr") == "1.0.0"){
+  headers = add_headers("User-Agent"="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.76 Safari/537.36",
+                        "Referer" = "https://courses.edx.org/login",
+                        "X-CSRFToken" = res2$cookies[which(res2$cookies$name=="csrftoken"),]$value)
+  
+  print(headers$headers)
+}else{
+  headers = add_headers("User-Agent"="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.76 Safari/537.36",
+                        "Referer" = "https://courses.edx.org/login",
+                        "X-CSRFToken" = res2$cookies$csrftoken)
+  
+  print(headers$httpheader)
+}
+
+if (packageVersion("httr") == "1.0.0"){
+  cookies = as.list(setNames(res2$cookies$value,res2$cookies$name))
+}else{
+  cookies = res2$cookies
+}
 
 res3 = POST("https://courses.edx.org/user_api/v1/account/login_session/",
-            headers,do.call(set_cookies,res2$cookies),
+            headers,do.call(set_cookies,cookies),
             body = list(email="",
                         password="",
                         remember="false"),
